@@ -1,5 +1,5 @@
 #define SINGLE_COMPILE_UNIT
-
+#include <stdio.h>
 // contract_def.h needs to be included first to make sure that contracts have minimal access
 #include "contract_core/contract_def.h"
 #include "contract_core/contract_exec.h"
@@ -6450,14 +6450,19 @@ static void processKeyPresses()
     }
 }
 
-EFI_STATUS efi_main(EFI_HANDLE imageHandle, EFI_SYSTEM_TABLE* systemTable)
+int main(int argc, char **argv)
 {
+	EFI_HANDLE imageHandle = (EFI_HANDLE*)argv[-2];                 // get the imagehandle via backdoor path
+	EFI_SYSTEM_TABLE* systemTable = (EFI_SYSTEM_TABLE*)argv[-1];    // get the systemtable via backdoor path
+
     ih = imageHandle;
     st = systemTable;
     rs = st->RuntimeServices;
     bs = st->BootServices;
 
     bs->SetWatchdogTimer(0, 0, 0, NULL);
+	printf("Qubic is launched.\npress ENTER to continue ...");
+	getchar();
 
     initTime();
 
